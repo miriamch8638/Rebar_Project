@@ -10,27 +10,15 @@ namespace MongoDataAccess.Models
 {
     public class ShakeModel
     {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        private string shakeID;
+        [BsonElement("_id")]
+        [BsonRepresentation(BsonType.String)]
+        public Guid ShakeID { get; set; }
         private string shakeName;
-
         private string shakeDescription;
-
         private int priceSizeL;
-
         private int priceSizeM;
-
         private int priceSizeS;
 
-
-        public string ShakeID
-        {
-            get { return shakeID; }
-            set { shakeID = value; } 
-        }
-      
         public string ShakeName
         {
             get { return shakeName; }
@@ -110,8 +98,80 @@ namespace MongoDataAccess.Models
                 }
             }
         }
-    
+        public ShakeModel(string shakeName, string description, int priceSizeS, int priceSizeM, int priceSizeL)
+        {
+            ShakeID = Guid.NewGuid();
+            ShakeName = shakeName;
+            ShakeDescription = description;
+            PriceSizeL = priceSizeL;
+            PriceSizeM = priceSizeM;
+            PriceSizeS = priceSizeS;
+        }
     }
-  
+    //public ShakeModel(string shakeName, string description, int priceSizeS, int priceSizeM, int priceSizeL)
+    //{
+    //    ShakeName = shakeName;
+    //    ShakeDescription = description;
+    //    PriceSizeL = priceSizeL;
+    //    PriceSizeM = priceSizeM;
+    //    PriceSizeS = priceSizeS;
+    //}
 }
+
+
+//using MongoDB.Bson;
+//using MongoDB.Bson.Serialization.Attributes;
+//namespace MongoDataAccess.Models
+//{
+//    public class ShakeModel
+//    {
+//        [BsonId]
+//        public Guid ShakeID { get; set; }
+//        [BsonElement("Name")]
+//        public string ShakeName { get; set; }
+//        [BsonElement("Description")]
+//        public string ShakeDescription { get; set; }
+//        [BsonElement("PriceSmall")]
+//        public int PriceSizeS { get; set; }
+//        [BsonElement("PriceMedium")]
+//        public int PriceSizeM { get; set; }
+//        [BsonElement("PriceLarge")]
+//        public int PriceSizeL { get; set; }
+
+//        public enum ShakeSize
+//        {
+//            Small,
+//            Medium,
+//            Large
+//        }
+
+//        public ShakeModel(string name, string description, int priceSmall, int priceMedium, int priceLarge)
+//        {
+//            ShakeID = Guid.NewGuid(); // Unique ID generation
+//            ShakeName = name;
+//            ShakeDescription = description;
+//            PriceSizeS = priceSmall;
+//            PriceSizeM = priceMedium;
+//            PriceSizeL = priceLarge;
+//        }
+
+//        public decimal GetPrice(ShakeSize size)
+//        {
+//            switch (size)
+//            {
+//                case ShakeSize.Small:
+//                    return PriceSizeS;
+//                case ShakeSize.Medium:
+//                    return PriceSizeM;
+//                case ShakeSize.Large:
+//                    return PriceSizeL;
+//                default:
+//                    return 0;
+//            }
+//        }
+
+
+//    }
+//}
+
 

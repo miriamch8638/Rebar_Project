@@ -8,7 +8,7 @@ namespace MongoDataAccess.DataAccess
     {
         private const string ConnectingString = "mongodb://127.0.0.1:27017";
         private const string DataBaseName = "Rebar";
-        private const string ShakeCollection = "Types_Shakes";
+        private const string ShakeCollection = "Shakes";
         private const string OrdersCollection = "Orders";
 
         private IMongoCollection<T> ConnectToMongo<T>(in string collection)
