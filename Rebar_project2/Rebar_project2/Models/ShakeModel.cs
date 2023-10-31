@@ -1,29 +1,36 @@
-﻿using MongoDB.Driver;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Rebar_Prject1.Models
+namespace MongoDataAccess.Models
 {
-    public class Shake
+    public class ShakeModel
     {
+
         [BsonId]
-        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        [BsonRepresentation(BsonType.ObjectId)]
         private string shakeID;
-        [BsonElement("shakeName")]
         private string shakeName;
-        [BsonElement("shakeDescription")]
+
         private string shakeDescription;
-        [BsonElement("priceSizeL")]
+
         private int priceSizeL;
-        [BsonElement("priceSizeM")]
+
         private int priceSizeM;
-        [BsonElement("priceSizeS")]
+
         private int priceSizeS;
+
 
         public string ShakeID
         {
             get { return shakeID; }
-            set { shakeID = value; } // No validation in setter for ShakeID
+            set { shakeID = value; } 
         }
+      
         public string ShakeName
         {
             get { return shakeName; }
@@ -103,8 +110,8 @@ namespace Rebar_Prject1.Models
                 }
             }
         }
+    
     }
-
-
+  
 }
 
