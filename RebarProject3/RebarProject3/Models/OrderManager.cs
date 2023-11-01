@@ -12,7 +12,7 @@
         {
             if (shakesList.Count > 9 || string.IsNullOrWhiteSpace(name))
                 return false;
-            double totalPrice = shakesList.Sum(shakes => shakes.Price);
+            int totalPrice = shakesList.Sum(shakes => shakes.Price);
             decimal totalSalePromotion = salePromotion.CalcTotal(Order.TotalPrice, Order.Date);
             List<Guid> shakeIDs = shakesList.ConvertAll(shakes => shakes.ShakeId);
 
@@ -25,7 +25,7 @@
         {
             if (shake != null)
             {
-                shakeToUpdate.Description = shake.ShakeDescription;
+                
                 switch (shakeToUpdate.Size)
                 {
                     case chooseSize.s:

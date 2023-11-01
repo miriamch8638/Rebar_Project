@@ -11,7 +11,7 @@ namespace RebarProject3.DataAccess
         public const string DataBaseName = "Rebar";
         public const string ShakeCollection = "Shakes";
         public const string OrdersCollection = "Orders";
-
+       
         //Shake Crud
         /************************/
         public static IMongoCollection<T> ConnectToMongo<T>(in string collection)
@@ -69,8 +69,7 @@ namespace RebarProject3.DataAccess
             var result = await OrsersAllCollection.FindAsync(_ => true);
             return result.ToList();
         }
-        private IMongoCollection<Order> ordersCollection;
-
+        
         //create order
         public async Task AddOrderToDB(OrderDB order)
         {
@@ -82,7 +81,7 @@ namespace RebarProject3.DataAccess
             if (ShakeOrder.Count <= 10 || !string.IsNullOrWhiteSpace(name))
             {
                 var orderManager = new OrderManager();
-                var shakesCollection = ConnectToMongo<Shake>("Shakes");
+                var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
                 var shakeOrderList = new List<ShakeOrder>();
                 foreach (var shakeOrder in ShakeOrder)
                 {
@@ -101,11 +100,11 @@ namespace RebarProject3.DataAccess
                     }
                 }
                 int totalPrice = ShakeOrder.Sum(shakes => shakes.Price);
-                int salePrice = (int)sale.CalcTotal(totalPrice,DateTime.Today);
+                int salePrice = (int)sale.CalcTotal(totalPrice, DateTime.Today);
 
                 List<Guid> shakeIDs = ShakeOrder.ConvertAll(shakes => shakes.ShakeId);
 
-                Order order = new Order(shakeOrderList, name, (int)totalPrice,salePrice);
+                Order order = new Order(shakeOrderList, name, (int)totalPrice, salePrice);
                 _ = AddOrderToDB(new OrderDB(order.Date, shakeIDs, totalPrice, name));
             }
         }
@@ -122,7 +121,5 @@ namespace RebarProject3.DataAccess
         //    await ordersCollection.DeleteOneAsync(filter);
         //}
 
-        public async Task CreateAccunt()
-        {
-        }
+    }
 }

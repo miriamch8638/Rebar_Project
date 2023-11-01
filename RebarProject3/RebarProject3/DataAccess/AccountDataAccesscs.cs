@@ -6,44 +6,36 @@ using System.Threading.Tasks;
 
 namespace RebarProject3.DataAccess
 {
-    public class AccountDataAccess
+    public class AccountDataAccess : DataAccess
     {
-        private IMongoCollection<Account> accountsCollection;
 
-        public AccountDataAccess(IMongoDatabase database)
+        Dailyreport dailyReport = new Dailyreport();
+
+        Account Account = new Account();
+        public async Task AddDailyReport(string password)
         {
-            accountsCollection = database.GetCollection<Account>("Accounts");
+            if (password == dailyReport.ManagerPassword)
+            {
+                var ordersCollection = ConnectToMongo<OrderDB>("Order");
+                var filter = Builders<OrderDB>.Filter.Eq(x => x.OrderCreateTime, dailyReport.date);
+                var orderList = await ordersCollection.Find(filter).ToListAsync();
+                Account.OrdersListInAccount.AddRange(orderList);
+                Account.GetToatlPrice();
+                dailyReport.SumOrders = orderList.Count();
+                dailyReport.SumMoney = Account.TotalPriceAllOrders;
+                var dailyReportCollection = ConnectToMongo<Dailyreport>("DailyReport");
+                _ = dailyReportCollection.InsertOneAsync(dailyReport);
+            }
+        }
+        public async Task<List<Dailyreport>> GetDailyReport()
+        {
+            var menuCollection = ConnectToMongo<Dailyreport>("DailyReport");
+            var result = await menuCollection.FindAsync(_ => true);
+            return result.ToList();
         }
 
-        public async Task<List<Account>> GetAllAccounts()
-        {
-            var result = await accountsCollection.FindAsync(_ => true);
-            return await result.ToListAsync();
-        }
-
-        public async Task CreateAccount(Account account)
-        {
-            await accountsCollection.InsertOneAsync(account);
-        }
-
-        //public async Task UpdateAccount(Account account)
-        //{
-        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, account.Id);
-        //    await accountsCollection.ReplaceOneAsync(filter, account);
-        //}
-
-        //public async Task DeleteAccount(Guid accountId)
-        //{
-        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
-        //    await accountsCollection.DeleteOneAsync(filter);
-        //}
-
-        //public async Task AddOrderToAccount(Guid accountId, Order order)
-        //{
-        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
-        //    var update = Builders<Account>.Update.AddToSet(x => x.OrdersListInAccount, order);
-        //    await accountsCollection.UpdateOneAsync(filter, update);
-        //}
     }
+
 }
+
 

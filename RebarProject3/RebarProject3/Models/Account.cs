@@ -2,24 +2,32 @@
 {
     public class Account
     {
-        public List<Order> OrdersListInAccount { get; set; }
+        public List<OrderDB> OrdersListInAccount { get; set; }
         public int TotalPriceAllOrders { get; set; }
         public Account()
         {
-            OrdersListInAccount = new List<Order>();
+            OrdersListInAccount = new List<OrderDB>();
             TotalPriceAllOrders = 0;
         }
-        public void AddOrderToAcount(Order o)
+        public void GetToatlPrice()
         {
-            try
+            foreach (var item in OrdersListInAccount)
             {
-                OrdersListInAccount.Add(o);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                
+                TotalPriceAllOrders += item.TotalPrice;
             }
         }
+        //    public void AddOrderToAcount(OrderDB o)
+        //    {
+        //        try
+        //        {
+        //            OrdersListInAccount.Add(o);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine(e.Message);
+
+        //        }
+        //    }
+        //}
     }
 }

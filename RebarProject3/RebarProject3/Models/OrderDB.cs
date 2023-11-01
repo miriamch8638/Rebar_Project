@@ -11,10 +11,10 @@ namespace RebarProject3.Models
             public DateTime OrderCreateTime { get; set; }
             public DateTime ReadyOrderTime { get; set; }
             public List<Guid> ShakesID { get; set; } = new List<Guid>();
-            public double TotalPrice { get; set; }
+            public int TotalPrice { get; set; }
             public string CustomerName { get; set; }
 
-            public OrderDB(DateTime orderCreateTime, List<Guid> shakesID, double totalPrice, string customerName)
+            public OrderDB(DateTime orderCreateTime, List<Guid> shakesID, int totalPrice, string customerName)
             {
                 OrderID = Guid.NewGuid();
                 OrderCreateTime = orderCreateTime;
