@@ -15,12 +15,25 @@ namespace Rebar_project3.Controllers
             _dataAccess = dataAccess;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAllShakes()
+        public async Task<ActionResult<IEnumerable<OrderDB>>> GetAllOrders()
         {
             try
             {
                 var orders = await _dataAccess.GetAllOrders();
                 return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] OrderModelInputcs orderModelInput)
+        {
+            try
+            {
+                await _dataAccess.CreateOrder(orderModelInput.ShakeOrder, orderModelInput.sale, orderModelInput.Name);
+                return Ok("Order added successfully.");
             }
             catch (Exception ex)
             {

@@ -14,12 +14,11 @@
         public chooseSize Size { get; set; }
         public int Price { get; set; }
         public Guid ShakeIdOrder { get; set; }
-        public ShakeOrder(Guid shakeId, string name, string des, chooseSize s, int price)
+        public ShakeOrder(Guid shakeId, string name, chooseSize s, int price)
         {
 
             ShakeId = shakeId;
             Name = name;
-            Description= des;
             Size = s;
             Price = price;
             ShakeIdOrder = Guid.NewGuid();

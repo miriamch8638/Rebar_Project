@@ -2,51 +2,37 @@
 using MongoDB.Driver.Core.Configuration;
 using RebarProject3.Models;
 
+
 namespace RebarProject3.DataAccess
-{
-    public class ShakeOrderDataAccess
     {
-        public const string ConnectingString = "mongodb://127.0.0.1:27017";
-        public const string DataBaseName = "Rebar";
-        public string ShakeCollection = "Shakes";
-        public const string OrdersCollection = "Orders";
-
-        public static IMongoCollection<T> ConnectToMongo<T>(in string collection)
+        public class ShakeOrderDataAccess
         {
-            var client = new MongoClient(ConnectingString);
-            var db = client.GetDatabase(DataBaseName);
-            return db.GetCollection<T>(collection);
-        }
-        public async Task<List<Shake>> GetAllShakes()
-        {
-            var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
-            var result = await shakesCollection.FindAsync(_ => true);
-            return result.ToList();
-        }
+            private IMongoCollection<ShakeOrder> shakeOrdersCollection;
 
-        public async Task CreateShake(Shake s)
-        {
-            var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
-
-            // Check if a similar object already exists in the collection
-            var filter = Builders<Shake>.Filter.Eq(x => x.ShakeName, s.ShakeName)
-                        & Builders<Shake>.Filter.Eq(x => x.ShakeDescription, s.ShakeDescription);
-            var existingShake = await shakesCollection.Find(filter).FirstOrDefaultAsync();
-
-            if (existingShake == null)
+            public ShakeOrderDataAccess(IMongoDatabase database)
             {
-                // If no similar object exists, insert the new Shake
-                await shakesCollection.InsertOneAsync(s);
+                shakeOrdersCollection = database.GetCollection<ShakeOrder>("ShakeOrders");
             }
 
-        }
+            public async Task<List<ShakeOrder>> GetAllShakeOrders()
+            {
+                var result = await shakeOrdersCollection.FindAsync(_ => true);
+                return await result.ToListAsync();
+            }
 
-        //////////Delete
-        public Task DeleteShake(Shake s)
-        {
-            var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
 
-            return shakesCollection.DeleteOneAsync(c => c.ShakeID == s.ShakeID);
+
+        public async Task UpdateShakeOrder(ShakeOrder shakeOrder)
+            {
+                var filter = Builders<ShakeOrder>.Filter.Eq(x => x.ShakeIdOrder, shakeOrder.ShakeIdOrder);
+                await shakeOrdersCollection.ReplaceOneAsync(filter, shakeOrder);
+            }
+
+            public async Task DeleteShakeOrder(Guid shakeOrderId)
+            {
+                var filter = Builders<ShakeOrder>.Filter.Eq(x => x.ShakeIdOrder, shakeOrderId);
+                await shakeOrdersCollection.DeleteOneAsync(filter);
+            }
         }
     }
-}
+

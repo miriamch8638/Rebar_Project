@@ -3,26 +3,25 @@
     public class Order
     {
         public Guid OrdeId { get; set; }
-        public List<ShakeOrder> Shakes { get; set; }
-        public int TotalAmount { get; set; }
+        public List<ShakeOrder> Shakes { get; set; }= new List<ShakeOrder>();
+        public int TotalPrice { get; set; }= 0;
         public String ClientName { get; set; }
         public DateTime Date { get; set; }
         public bool IsSale { get; set; }
-        public Order(string clientName, DateTime date, bool isSale)
+        public Order(List<ShakeOrder> l, string clientName,int totalPrice, int TotalSale)
         {
             OrdeId = Guid.NewGuid();
-            Shakes = new List<ShakeOrder>();
-            TotalAmount = 0;
+            Shakes = l;
             ClientName = clientName;
-            Date = date;
-            IsSale = isSale;
+            Date = DateTime.Now;
+            TotalPrice = totalPrice-TotalSale;
         }
         public void AddShakeToOrder(ShakeOrder shake)
         {
             try
             {
                 Shakes.Add(shake);
-                TotalAmount += shake.Price;
+                TotalPrice += shake.Price;
             }
             catch (Exception e)
             {
@@ -32,7 +31,7 @@
 
         }
     }
-    public struct SalePromotion
+    public  struct SalePromotion
     {
         public string Name { get; set; }   
         public decimal DiscountPercentage { get; set; }  

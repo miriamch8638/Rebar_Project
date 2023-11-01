@@ -1,7 +1,7 @@
 ﻿
 using RebarProject3.Models;
 using MongoDB.Driver;
-using RebarProject3.Models;
+
 
 namespace RebarProject3.DataAccess
 {
@@ -20,14 +20,14 @@ namespace RebarProject3.DataAccess
             var db = client.GetDatabase(DataBaseName);
             return db.GetCollection<T>(collection);
         }
-        
+
         public async Task<List<Shake>> GetAllShakes()
         {
             var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
             var result = await shakesCollection.FindAsync(_ => true);
             return result.ToList();
         }
-      
+
         public async Task CreateShake(Shake s)
         {
             var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
@@ -42,7 +42,7 @@ namespace RebarProject3.DataAccess
                 // If no similar object exists, insert the new Shake
                 await shakesCollection.InsertOneAsync(s);
             }
-         
+
         }
 
         //////////Delete
@@ -50,7 +50,7 @@ namespace RebarProject3.DataAccess
         {
             var shakesCollection = ConnectToMongo<Shake>(ShakeCollection);
 
-            return shakesCollection.DeleteOneAsync(c=>c.ShakeID== s.ShakeID);   
+            return shakesCollection.DeleteOneAsync(c => c.ShakeID == s.ShakeID);
         }
         //////////update
 
@@ -63,13 +63,75 @@ namespace RebarProject3.DataAccess
         /**********************/
         //Orders Crud
 
-        public async Task<List<Order>> GetAllOrders()
+        public async Task<List<OrderDB>> GetAllOrders()
         {
-            var OrsersAllCollection = ConnectToMongo<Order>(OrdersCollection);
+            var OrsersAllCollection = ConnectToMongo<OrderDB>(OrdersCollection);
             var result = await OrsersAllCollection.FindAsync(_ => true);
             return result.ToList();
         }
-     
+        private IMongoCollection<Order> ordersCollection;
+
+        public async Task CreateOrder(Order order, SalePromotion sale)
+        {
+            if (order.IsSale == true)
+            {
+                decimal c = sale.CalcTotal(order.TotalPrice, order.Date);
+                order.TotalPrice = (int)c;
+                UpdateOrder(order);
+            }
+            await ordersCollection.InsertOneAsync(order);
+        }
+        //create order
+        public async Task AddOrderToDB(OrderDB order)
+        {
+            var orderCollection = ConnectToMongo<OrderDB>(OrdersCollection);
+            await orderCollection.InsertOneAsync(order);
+        }
+        public async Task CreateShakeOrder(List<ShakeOrder> ShakeOrder, SalePromotion sale, string name)
+        {
+            if (ShakeOrder.Count <= 10 || !string.IsNullOrWhiteSpace(name))
+            {
+                var orderManager = new OrderManager();
+                var shakesCollection = ConnectToMongo<Shake>("Shakes");
+                var shakeOrderList = new List<ShakeOrder>();
+                foreach (var shakeOrder in ShakeOrder)
+                {
+                    var filter = Builders<Shake>.Filter.Eq(x => x.ShakeName, shakeOrder.Name);
+                    var existingShake = await shakesCollection.Find(filter).FirstOrDefaultAsync();
+
+                    if (existingShake != null)
+                    {
+                        orderManager.GetPrice(shakeOrder, existingShake);
+                        shakeOrder.Description = existingShake.ShakeDescription;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No matching Shake found for the ShakeOrder.");
+
+                    }
+                }
+                int totalPrice = ShakeOrder.Sum(shakes => shakes.Price);
+                int salePrice = (int)sale.CalcTotal(totalPrice,DateTime.Today);
+
+                List<Guid> shakeIDs = ShakeOrder.ConvertAll(shakes => shakes.ShakeId);
+
+                Order order = new Order(shakeOrderList, name, (int)totalPrice,salePrice);
+                _ = AddOrderToDB(new OrderDB(order.Date, shakeIDs, totalPrice, name));
+            }
+        }
+      
+        public async Task UpdateOrder(Order order)
+        {
+            var filter = Builders<Order>.Filter.Eq(x => x.OrdeId, order.OrdeId);
+            await ordersCollection.ReplaceOneAsync(filter, order);
+        }
+
+        public async Task DeleteOrder(Guid orderId)
+        {
+            var filter = Builders<Order>.Filter.Eq(x => x.OrdeId, orderId);
+            await ordersCollection.DeleteOneAsync(filter);
+        }
+
 
     }
 }

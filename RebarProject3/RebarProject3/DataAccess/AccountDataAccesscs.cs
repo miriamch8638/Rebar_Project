@@ -26,24 +26,24 @@ namespace RebarProject3.DataAccess
             await accountsCollection.InsertOneAsync(account);
         }
 
-        public async Task UpdateAccount(Account account)
-        {
-            var filter = Builders<Account>.Filter.Eq(x => x.Id, account.Id);
-            await accountsCollection.ReplaceOneAsync(filter, account);
-        }
+        //public async Task UpdateAccount(Account account)
+        //{
+        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, account.Id);
+        //    await accountsCollection.ReplaceOneAsync(filter, account);
+        //}
 
-        public async Task DeleteAccount(Guid accountId)
-        {
-            var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
-            await accountsCollection.DeleteOneAsync(filter);
-        }
+        //public async Task DeleteAccount(Guid accountId)
+        //{
+        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
+        //    await accountsCollection.DeleteOneAsync(filter);
+        //}
 
-        public async Task AddOrderToAccount(Guid accountId, Order order)
-        {
-            var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
-            var update = Builders<Account>.Update.AddToSet(x => x.OrdersListInAccount, order);
-            await accountsCollection.UpdateOneAsync(filter, update);
-        }
+        //public async Task AddOrderToAccount(Guid accountId, Order order)
+        //{
+        //    var filter = Builders<Account>.Filter.Eq(x => x.Id, accountId);
+        //    var update = Builders<Account>.Update.AddToSet(x => x.OrdersListInAccount, order);
+        //    await accountsCollection.UpdateOneAsync(filter, update);
+        //}
     }
 }
 
