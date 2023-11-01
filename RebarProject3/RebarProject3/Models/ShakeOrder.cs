@@ -14,9 +14,17 @@
         public chooseSize Size { get; set; }
         public int Price { get; set; }
         public Guid ShakeIdOrder { get; set; }
+        //public ShakeOrder(Guid shakeId, string name, chooseSize s, int price)
+        //{
+
+        //    ShakeId = shakeId;
+        //    Name = name;
+        //    Size = s;
+        //    Price = price;
+        //    ShakeIdOrder = Guid.NewGuid();
+        //}
         public ShakeOrder(Guid shakeId, string name, chooseSize s, int price)
         {
-
             ShakeId = shakeId;
             Name = name;
             Size = s;
