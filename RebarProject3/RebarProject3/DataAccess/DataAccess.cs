@@ -71,23 +71,13 @@ namespace RebarProject3.DataAccess
         }
         private IMongoCollection<Order> ordersCollection;
 
-        public async Task CreateOrder(Order order, SalePromotion sale)
-        {
-            if (order.IsSale == true)
-            {
-                decimal c = sale.CalcTotal(order.TotalPrice, order.Date);
-                order.TotalPrice = (int)c;
-                UpdateOrder(order);
-            }
-            await ordersCollection.InsertOneAsync(order);
-        }
         //create order
         public async Task AddOrderToDB(OrderDB order)
         {
             var orderCollection = ConnectToMongo<OrderDB>(OrdersCollection);
             await orderCollection.InsertOneAsync(order);
         }
-        public async Task CreateShakeOrder(List<ShakeOrder> ShakeOrder, SalePromotion sale, string name)
+        public async Task CreateOrder(List<ShakeOrder> ShakeOrder, SalePromotion sale, string name)
         {
             if (ShakeOrder.Count <= 10 || !string.IsNullOrWhiteSpace(name))
             {
@@ -119,19 +109,20 @@ namespace RebarProject3.DataAccess
                 _ = AddOrderToDB(new OrderDB(order.Date, shakeIDs, totalPrice, name));
             }
         }
-      
-        public async Task UpdateOrder(Order order)
+
+        //public async Task UpdateOrder(Order order)
+        //{
+        //    var filter = Builders<OrderDB>.Filter.Eq(x => x.OrdeId, order.OrdeId);
+        //    await ordersCollection.ReplaceOneAsync(filter, order);
+        //}
+
+        //public async Task DeleteOrder(Guid orderId)
+        //{
+        //    var filter = Builders<Order>.Filter.Eq(x => x.OrdeId, orderId);
+        //    await ordersCollection.DeleteOneAsync(filter);
+        //}
+
+        public async Task CreateAccunt()
         {
-            var filter = Builders<Order>.Filter.Eq(x => x.OrdeId, order.OrdeId);
-            await ordersCollection.ReplaceOneAsync(filter, order);
         }
-
-        public async Task DeleteOrder(Guid orderId)
-        {
-            var filter = Builders<Order>.Filter.Eq(x => x.OrdeId, orderId);
-            await ordersCollection.DeleteOneAsync(filter);
-        }
-
-
-    }
 }
