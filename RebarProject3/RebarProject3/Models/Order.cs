@@ -32,4 +32,33 @@
 
         }
     }
+    public struct SalePromotion
+    {
+        public string Name { get; set; }   
+        public decimal DiscountPercentage { get; set; }  
+        public DateTime StartDate { get; set; }  
+        public DateTime EndDate { get; set; }    
+
+        public SalePromotion(string name, decimal discountPercentage, DateTime startDate, DateTime endDate)
+        {
+            Name = name;
+            DiscountPercentage = discountPercentage;
+            StartDate = startDate;
+            EndDate = endDate;
+        }
+        public decimal CalcTotal(decimal CurrntTotal,DateTime d)
+        {
+            if(d<=EndDate&&d>=StartDate)
+            {
+                CurrntTotal *= DiscountPercentage;
+                return CurrntTotal / 100;
+            }
+            return CurrntTotal;
+        }
+        public override string ToString()
+        {
+            return $"{Name} ({DiscountPercentage}% off) from {StartDate:d} to {EndDate:d}";
+        }
+    }
+
 }

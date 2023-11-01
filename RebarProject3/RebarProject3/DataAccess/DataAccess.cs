@@ -63,21 +63,13 @@ namespace RebarProject3.DataAccess
         /**********************/
         //Orders Crud
 
-        //public async Task<List<Order>> GetAllOrders()
-        //{
-        //    var OrsersAllCollection = ConnectToMongo<Order>(OrdersCollection);
-        //    var result = await OrsersAllCollection.FindAsync(_ => true);
-        //    return result.ToList();
-        //}
         public async Task<List<Order>> GetAllOrders()
         {
-            
-            var ordersAllCollection = ConnectToMongo<Order>(OrdersCollection);
-            var result = await ordersAllCollection.FindAsync(_ => true);
-            return await result.ToListAsync();
+            var OrsersAllCollection = ConnectToMongo<Order>(OrdersCollection);
+            var result = await OrsersAllCollection.FindAsync(_ => true);
+            return result.ToList();
         }
-
-
+     
 
     }
 }

@@ -19,7 +19,16 @@
 
                 Console.WriteLine(e.Message);
             }
-            
+
+        }
+        public void ShowMenu()
+        {
+            foreach (var item in AllShakesMenu)
+            {
+                Console.WriteLine(item.ShakeName + item.ShakeDescription+ "  \n"
+                    +" size L "+item.PriceSizeL+"\n" + " size M " + item.PriceSizeM
+                    + "\n"+" size S " + item.PriceSizeS + "\n");
+            }
         }
     }
 
